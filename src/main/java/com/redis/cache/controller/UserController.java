@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,13 @@ public class UserController {
     @PutMapping("/update")
     public User updatePersonByID(@RequestBody User user) {
         mapper.updateUserByID(user);
+        return user;
+    }
+    
+    @CachePut(value = "redis1", key = "#user.id")
+    @PostMapping("/insert")
+    public User insertUser(@RequestBody User user) {
+        mapper.insertUser(user);
         return user;
     }
 
