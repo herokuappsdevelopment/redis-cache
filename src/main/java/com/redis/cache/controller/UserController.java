@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redis.cache.mapper.UserMapper;
 import com.redis.cache.model.User;
-import com.redis.cache.repository.UserRepository;
 
 /**
  * @author VenkatS
@@ -26,24 +26,20 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    public UserController(UserRepository userRepository) {	
-        this.userRepository = userRepository;
-    }
+     @Autowired
+     UserMapper mapper;
 
     @Cacheable(value = "redis1", key = "#userId")
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public User getUser(@PathVariable String userId) {
         logger.info("Getting user with ID {}.", userId);
-        return userRepository.findById(Long.valueOf(userId)).get();
+        return mapper.findById(Long.valueOf(userId));	
     }
 
     @CachePut(value = "redis1", key = "#user.id")
     @PutMapping("/update")
     public User updatePersonByID(@RequestBody User user) {
-        userRepository.save(user);
+        mapper.updateUserByID(user);
         return user;
     }
 
@@ -51,6 +47,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void deleteUserByID(@PathVariable Long userId) {
         logger.info("deleting person with id {}", userId);
-        userRepository.deleteById(userId);
+        mapper.deleteById(userId);
     }
 }
