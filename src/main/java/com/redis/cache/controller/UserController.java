@@ -1,5 +1,7 @@
 package com.redis.cache.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,12 @@ public class UserController {
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public User getUser(@PathVariable String userId) {
         logger.info("Getting user with ID {}.", userId);
-        return mapper.findById(Long.valueOf(userId));	
+        return mapper.findById(Integer.valueOf(userId));	
+    }
+    
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public List<User> getUsers() {
+        return mapper.findAll();	
     }
 
     @CachePut(value = "redis1", key = "#user.id")
@@ -53,7 +60,7 @@ public class UserController {
 
     @CacheEvict(value = "redis1", allEntries=true)
     @DeleteMapping("/{userId}")
-    public void deleteUserByID(@PathVariable Long userId) {
+    public void deleteUserByID(@PathVariable Integer userId) {
         logger.info("deleting person with id {}", userId);
         mapper.deleteById(userId);
     }
