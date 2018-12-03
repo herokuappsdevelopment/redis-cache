@@ -21,7 +21,7 @@ public interface UserMapper {
     User findById(Long id);
 	
 	@Update("Update user set name= #{name},followers=#{followers} where id=#{id}")
-	User updateUserByID(User usr);
+	void updateUserByID(User usr);
 	
 	@Delete("DELETE FROM user WHERE id = #{id}")
 	void deleteById(Long id);
